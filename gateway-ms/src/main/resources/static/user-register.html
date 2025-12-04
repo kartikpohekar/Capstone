@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>User Register</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<div class="glass-card">
+    <h1 class="title">User Register</h1>
+
+    <input id="username" class="input" placeholder="Username" autocomplete="off">
+    <input id="email" type="email" class="input" placeholder="Email" autocomplete="off">
+    <input id="password" type="password" class="input" placeholder="Password" autocomplete="off">
+
+    <button class="btn-primary" onclick="registerUser()">Register</button>
+    <button class="btn-secondary" onclick="location.href='index.html'">Back</button>
+</div>
+
+<script>
+async function registerUser() {
+
+    const body = {
+        username: username.value,
+        email: email.value,
+        password: password.value
+    };
+
+    try {
+        const res = await fetch("http://localhost:8081/user/register", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(body)
+        });
+
+        if (!res.ok) return alert("Registration Failed!");
+
+        const data = await res.json();
+        localStorage.setItem("userToken", data.token);
+
+        alert("User Registered Successfully!");
+
+        location.href = "user-login.html";
+
+    } catch (e) {
+        alert("User-MS Down!");
+    }
+}
+</script>
+
+</body>
+</html>

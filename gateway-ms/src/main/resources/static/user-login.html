@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>User Login</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<div class="glass-card">
+    <h1 class="title">User Login</h1>
+
+    <input id="username" class="input" placeholder="Username" autocomplete="off">
+    <input id="password" type="password" class="input" placeholder="Password" autocomplete="off">
+
+    <button class="btn-primary" onclick="loginUser()">Login</button>
+    <button class="btn-secondary" onclick="location.href='index.html'">Back</button>
+</div>
+
+<script>
+async function loginUser() {
+
+    const body = {
+        username: username.value,
+        password: password.value
+    };
+
+    try {
+        const res = await fetch("http://localhost:8081/user/login", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(body)
+        });
+
+        if (!res.ok) return alert("Invalid Credentials!");
+
+        const data = await res.json();
+        localStorage.setItem("userToken", data.token);
+
+        location.href = "user-dashboard.html";
+
+    } catch (e) {
+        alert("User-MS is not running!");
+    }
+}
+</script>
+
+</body>
+</html>

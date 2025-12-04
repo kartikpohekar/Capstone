@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Owner Login</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<div class="glass-card">
+    <h1 class="title">Owner Login</h1>
+
+    <input id="username" class="input" placeholder="Username" autocomplete="off">
+    <input id="password" type="password" class="input" placeholder="Password" autocomplete="off">
+
+    <button class="btn-primary" onclick="loginOwner()">Login</button>
+    <button class="btn-secondary" onclick="location.href='index.html'">Back</button>
+</div>
+
+<script>
+async function loginOwner() {
+
+    const body = {
+        username: username.value,
+        password: password.value
+    };
+
+    try {
+        const res = await fetch("http://localhost:8082/owner/auth/login", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(body)
+        });
+
+        if (!res.ok) return alert("Invalid Credentials!");
+
+        const token = await res.text();
+        localStorage.setItem("ownerToken", token);
+
+        location.href = "owner-dashboard.html";
+
+    } catch (e) {
+        alert("Owner-MS Down!");
+    }
+}
+</script>
+
+</body>
+</html>

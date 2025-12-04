@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>User Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="glass-card" style="width: 600px;">
+    <h1 class="title">Welcome User</h1>
+
+    <button class="btn-primary" onclick="logout()">Logout</button>
+
+    <hr class="divider">
+
+    <h2 class="subtitle">Available Apps</h2>
+
+    <div id="appList" class="list-box">
+        Loading apps...
+    </div>
+</div>
+
+<script>
+async function loadApps() {
+    const token = localStorage.getItem("userToken");
+
+    const res = await fetch("http://localhost:8081/app/all", {
+        headers: { "Authorization": "Bearer " + token }
+    });
+
+    const apps = await res.json();
+
+    let html = "";
+    apps.forEach(a => {
+        html += `
+            <div class="list-item">
+                <b>${a.name}</b><br>
+                Category: ${a.category}<br>
+                Downloads: ${a.downloads}
+            </div>
+        `;
+    });
+
+    document.getElementById("appList").innerHTML = html;
+}
+
+function logout() {
+    localStorage.removeItem("userToken");
+    window.location.href = "index.html";
+}
+
+loadApps();
+</script>
+
+</body>
+</html>

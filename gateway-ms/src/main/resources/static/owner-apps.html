@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Apps</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="glass-card" style="width: 650px;">
+    <h1 class="title">My Apps</h1>
+
+    <button class="btn-secondary" onclick="location.href='owner-dashboard.html'">⬅ Back</button>
+
+    <div id="apps" class="list-box">
+        Loading...
+    </div>
+</div>
+
+<script>
+async function loadOwnerApps() {
+    const token = localStorage.getItem("ownerToken");
+
+    const res = await fetch("http://localhost:8082/app/myapps", {
+        headers: { "Authorization": token }
+    });
+
+    const apps = await res.json();
+
+    let html = "";
+    apps.forEach(a => {
+        html += `
+            <div class="list-item">
+                <b>${a.name}</b><br>
+                Category: ${a.category}<br>
+                Price: ₹${a.price}<br>
+                <button class="btn-secondary" onclick="deleteApp(${a.id})">Delete</button>
+            </div>
+        `;
+    });
+
+    document.getElementById("apps").innerHTML = html;
+}
+
+async function deleteApp(id) {
+    const token = localStorage.getItem("ownerToken");
+
+    await fetch(`http://localhost:8082/app/delete/${id}`, {
+        method: "DELETE",
+        headers: { "Authorization": token }
+    });
+
+    alert("App deleted!");
+    loadOwnerApps();
+}
+
+loadOwnerApps();
+</script>
+
+</body>
+</html>

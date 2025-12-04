@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Owner Register</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<div class="glass-card">
+    <h1 class="title">Owner Register</h1>
+
+    <input id="username" class="input" placeholder="Username" autocomplete="off">
+    <input id="email" type="email" class="input" placeholder="Email" autocomplete="off">
+    <input id="password" type="password" class="input" placeholder="Password" autocomplete="off">
+
+    <button class="btn-primary" onclick="registerOwner()">Register</button>
+    <button class="btn-secondary" onclick="location.href='index.html'">Back</button>
+</div>
+
+<script>
+async function registerOwner() {
+
+    const body = {
+        username: username.value,
+        email: email.value,
+        password: password.value
+    };
+
+    try {
+        const res = await fetch("http://localhost:8082/owner/auth/register", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(body)
+        });
+
+        if (!res.ok) return alert("Registration Failed!");
+
+        const token = await res.text();
+        localStorage.setItem("ownerToken", token);
+
+        alert("Owner Registered Successfully!");
+
+        location.href = "owner-login.html";
+
+    } catch (e) {
+        alert("Owner-MS Down!");
+    }
+}
+</script>
+
+</body>
+</html>

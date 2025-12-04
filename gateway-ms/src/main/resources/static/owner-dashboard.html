@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Owner Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="glass-card" style="width: 520px;">
+    <h1 class="title">App Owner Dashboard</h1>
+
+    <button class="btn-primary" onclick="location.href='add-app.html'">➕ Add New App</button>
+    <button class="btn-secondary" onclick="location.href='owner-apps.html'">📦 View My Apps</button>
+    <button class="btn-primary" onclick="logout()">Logout</button>
+</div>
+
+<script>
+function logout() {
+    localStorage.removeItem("ownerToken");
+    window.location.href = "index.html";
+}
+</script>
+
+</body>
+</html>
