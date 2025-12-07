@@ -1,0 +1,551 @@
+<!doctype html> 
+<html lang="en"> 
+<head> 
+<meta charset="utf-8" /> 
+<meta name="viewport" content="width=device-width,initial-scale=1" /> 
+<title>Owner Dashboard — Play Store</title> 
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet"> 
+<style> 
+  :root{ 
+    --accent:#1466ff; 
+    --bg1: #e8f1ff; 
+    --card-radius:14px; 
+    --muted: #456; 
+  } 
+
+  html,body{ 
+    height:100%; 
+    margin:0; 
+    font-family:Inter,Arial,Helvetica; 
+    background: linear-gradient(120deg,#eaf3ff,#fff); 
+    background-size:400% 400%; 
+    animation: gradientMove 12s ease infinite;
+  } 
+
+  @keyframes gradientMove{ 
+    0%{background-position:0% 50%} 
+    50%{background-position:100% 50%} 
+    100%{background-position:0% 50%} 
+  } 
+
+  .page{ 
+    max-width:1100px; 
+    margin:18px auto; 
+    padding:18px; 
+  } 
+
+  header{ 
+    display:flex; 
+    align-items:center; 
+    justify-content:space-between; 
+    gap:12px; 
+    margin-bottom:10px; 
+  } 
+
+  header h1{ 
+    margin:0; 
+    color:#073b66; 
+    font-size:22px; 
+  } 
+
+  .controls{ 
+    display:flex; 
+    gap:8px; 
+    align-items:center; 
+  } 
+
+  .search-row{ 
+    display:flex; 
+    gap:8px; 
+    align-items:center; 
+    margin:12px 0; 
+  } 
+
+  input[type="text"], input[type="file"]{ 
+    padding:10px 12px; 
+    border-radius:10px; 
+    border:1px solid rgba(10,30,60,0.06); 
+  } 
+
+  .grid{ 
+    display:grid; 
+    grid-template-columns:repeat(auto-fill,minmax(320px,1fr)); 
+    gap:16px; 
+    margin-top:12px; 
+  } 
+
+  .card{ 
+    border-radius:16px; 
+    padding:16px; 
+    display:flex; 
+    gap:14px; 
+    align-items:flex-start; 
+    background: linear-gradient(180deg, rgba(255,255,255,0.9), rgba(255,255,255,0.75)); 
+    box-shadow: 0 12px 36px rgba(8,28,64,0.06); 
+    transition: transform .28s cubic-bezier(.2,.9,.3,1), box-shadow .28s; 
+    cursor: pointer; 
+  } 
+
+  .card:hover{ 
+    transform: translateY(-8px); 
+    box-shadow: 0 24px 60px rgba(8,28,64,0.09); 
+  } 
+
+  .icon{ 
+    width:92px; 
+    height:92px; 
+    border-radius:18px; 
+    display:flex; 
+    align-items:center; 
+    justify-content:center; 
+    background: linear-gradient(135deg,#f2f9ff,#f9fbff); 
+    overflow:hidden; 
+    flex-shrink:0; 
+    border:1px solid rgba(10,30,60,0.04);
+  } 
+
+  .icon img{ 
+    width:100%; 
+    height:100%; 
+    object-fit:cover; 
+    display:block; 
+    border-radius:16px; 
+  } 
+
+  .content{ flex:1; } 
+
+  .title{ 
+    margin:0; 
+    font-size:18px; 
+    color:#062a56; 
+  } 
+
+  .desc{ 
+    margin:6px 0 0; 
+    color:var(--muted); 
+    font-size:13px; 
+  } 
+
+  .meta-row{ 
+    display:flex; 
+    gap:12px; 
+    align-items:center; 
+    margin-top:10px; 
+    flex-wrap:wrap; 
+  } 
+
+  .chip{ 
+    background:#eef6ff; 
+    color:#0b4aa3; 
+    padding:6px 8px; 
+    border-radius:999px; 
+    font-size:12px; 
+  } 
+
+  .stats{ 
+    color:#0b3b66; 
+    font-weight:600; 
+    font-size:13px; 
+  } 
+
+  .actions{ 
+    display:flex; 
+    gap:8px; 
+    margin-top:12px; 
+  } 
+
+  .btn{ 
+    padding:8px 12px; 
+    border-radius:10px; 
+    border:none; 
+    cursor:pointer; 
+    font-weight:600; 
+  } 
+
+  .btn-ghost{ 
+    background:transparent; 
+    border:1px solid rgba(10,30,60,0.06); 
+  } 
+
+  .btn-primary{ 
+    background: linear-gradient(90deg,#1466ff,#00c2ff); 
+    color:white; 
+  } 
+
+  .small-muted{ 
+    font-size:13px; 
+    color:#5e6a7a; 
+  } 
+
+  #modal{ 
+    position:fixed; 
+    inset:0; 
+    display:none; 
+    align-items:center; 
+    justify-content:center; 
+    background:rgba(6,9,18,0.45); 
+    z-index:1200; 
+  } 
+
+  #modal .panel{ 
+    width:720px; 
+    max-width:92%; 
+    background:white; 
+    border-radius:12px; 
+    padding:18px; 
+  } 
+
+  @media (max-width:740px){ 
+    .card{ flex-direction:row; align-items:center; } 
+    .icon{ width:68px; height:68px; } 
+  } 
+</style> 
+</head> 
+
+<body> 
+  <div class="page"> 
+    <header> 
+      <div> 
+        <h1>Owner Dashboard</h1> 
+        <div class="small-muted">Manage your apps • upload icons • edits • downloads</div> 
+      </div> 
+
+      <div class="controls"> 
+        <button class="btn btn-primary" onclick="location.href='index.html'">Home</button> 
+        <button class="btn btn-ghost" onclick="location.reload()">Refresh</button> 
+      </div> 
+    </header> 
+
+    <div class="search-row"> 
+      <input id="appName" placeholder="App Name" /> 
+      <input id="appGenre" placeholder="Genre (comma separated)" /> 
+      <input id="appVersion" placeholder="Version" style="width:120px;" /> 
+      <input id="appIconFile" type="file" accept="image/*" /> 
+      <button class="btn btn-primary" onclick="addApp()">Add App</button> 
+      <div style="margin-left:auto" class="small-muted">Owner: <b id="owner-email">You</b></div> 
+    </div> 
+
+    <div id="grid" class="grid" aria-live="polite"></div> 
+  </div> 
+
+  <div id="modal" role="dialog" aria-modal="true"> 
+    <div class="panel"> 
+      <h3 id="modal-title">Edit App</h3> 
+
+      <div style="display:flex;gap:10px;margin-top:12px;"> 
+        <input id="edit-name" placeholder="Name" style="flex:1" /> 
+        <input id="edit-version" placeholder="Version" style="width:120px" /> 
+      </div> 
+
+      <div style="margin-top:10px;"> 
+        <input id="edit-genre" placeholder="Genre (comma separated)" style="width:60%" /> 
+      </div> 
+
+      <div style="margin-top:10px;"> 
+        <textarea id="edit-desc" rows="3" style="width:100%;border-radius:8px;padding:8px;border:1px solid #ddd;"></textarea> 
+      </div> 
+
+      <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:10px;"> 
+        <button class="btn btn-ghost" onclick="closeModal()">Cancel</button> 
+        <button class="btn btn-primary" onclick="saveAppEdit()">Save</button> 
+      </div> 
+    </div> 
+  </div> 
+
+  <!-- Vanilla-tilt --> 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.7.2/vanilla-tilt.min.js"></script> 
+
+  <script> 
+    const ownerId = Number(localStorage.getItem("ownerId")) || 1; 
+    const token = localStorage.getItem("ownerToken") || ''; 
+    document.getElementById('owner-email').innerText = localStorage.getItem('ownerEmail') || 'You'; 
+
+    window.onload = loadApps; 
+
+    async function loadApps(){ 
+      try { 
+        const resp = await fetch(`http://localhost:8082/owner/apps/${ownerId}`, { headers: { "Authorization": "Bearer " + token }}); 
+        const list = resp.ok ? await resp.json() : []; 
+        render(list || []); 
+      } catch(e){ 
+        console.error(e); 
+        document.getElementById('grid').innerHTML = '<p>Unable to load apps.</p>'; 
+      } 
+    } 
+
+    function render(list){ 
+      const grid = document.getElementById('grid'); 
+      grid.innerHTML = ''; 
+
+      if(!list || list.length===0){ 
+        grid.innerHTML = '<p>No apps found.</p>'; 
+        return; 
+      } 
+
+      list.forEach(app => { 
+        const card = document.createElement('div'); 
+        card.className = 'card'; 
+        card.setAttribute('data-tilt',''); 
+
+        const iconHtml = app.iconUrl 
+          ? `<div class="icon"><img src="${escapeHtml(app.iconUrl)}" alt="icon"></div>` 
+          : `<div class="icon">${initials(app.name||'A')}</div>`; 
+
+        card.innerHTML = `
+          ${iconHtml}
+          <div class="content">
+            <div style="display:flex;justify-content:space-between;align-items:center;gap:12px">
+              <div>
+                <h3 class="title">${escapeHtml(app.name||'Untitled')}</h3>
+                <div class="desc">${escapeHtml(app.description||'')}</div>
+              </div>
+
+              <div style="text-align:right">
+                <div class="stats" id="downloads-${app.appId}">Downloads: —</div>
+                <div class="small-muted">v ${escapeHtml(app.version||'1.0')}</div>
+              </div>
+            </div>
+
+            <div class="meta-row">
+              <div class="chip">${(app.genre||'').split(',').map(g=>escapeHtml(g.trim())).filter(Boolean).join(' • ')}</div>
+              <div class="small-muted" id="rating-${app.appId}">(rating loading)</div>
+            </div>
+
+            <div class="actions">
+              <button class="btn btn-primary" onclick="toggleVisibility(${app.appId})">${app.visible ? 'Make Hidden' : 'Make Visible'}</button>
+              <button class="btn btn-ghost" onclick="toggleReviews(${app.appId}, this)">Show Reviews</button>
+              <button class="btn btn-ghost" onclick="openEdit(${app.appId})">Edit</button>
+            </div>
+
+            <div id="reviews-${app.appId}" style="margin-top:10px; display:none; background:#f8fbff; padding:10px; border-radius:10px;"></div>
+          </div>
+        `;
+
+        grid.appendChild(card);
+
+        VanillaTilt.init(card, { max: 10, speed: 350, glare: true, "max-glare": 0.08 });
+
+        fetchRating(app.appId);
+        fetchDownloadCount(app.appId);
+      });
+    }
+
+    async function addApp(){
+      const name = (document.getElementById('appName').value||'').trim();
+      if(!name){ alert('Name required'); return; }
+
+      let iconUrl = null;
+      const fileEl = document.getElementById('appIconFile');
+
+      if(fileEl && fileEl.files && fileEl.files[0]){
+        const fd = new FormData();
+        fd.append('file', fileEl.files[0]);
+
+        try {
+          const r = await fetch('http://localhost:8082/owner/apps/upload-icon', { 
+            method:'POST', 
+            body: fd, 
+            headers:{ "Authorization":"Bearer "+token }
+          });
+
+          const j = await r.json();
+          iconUrl = j.url || null;
+
+        } catch(e){
+          console.error('upload failed', e);
+        }
+      }
+
+      const payload = { 
+        ownerId, 
+        name, 
+        genre: (document.getElementById('appGenre').value||''), 
+        version: (document.getElementById('appVersion').value||''), 
+        description:'', 
+        iconUrl 
+      };
+
+      const res = await fetch('http://localhost:8082/owner/apps', {
+        method:'POST',
+        headers: { 
+          "Content-Type":"application/json", 
+          "Authorization":"Bearer "+token 
+        },
+        body: JSON.stringify(payload)
+      });
+
+      if(!res.ok){ 
+        alert('Add failed'); 
+        return; 
+      }
+
+      document.getElementById('appName').value='';
+      document.getElementById('appGenre').value='';
+      document.getElementById('appVersion').value='';
+      if(fileEl) fileEl.value='';
+
+      await loadApps();
+    }
+
+    let editingAppId = null;
+
+    async function openEdit(id){
+      editingAppId = id;
+
+      const r = await fetch(`http://localhost:8082/apps/${id}`, { 
+        headers: { "Authorization": "Bearer "+token }
+      });
+
+      if(!r.ok){
+        alert('Unable to fetch');
+        return;
+      }
+
+      const app = await r.json();
+
+      document.getElementById('edit-name').value = app.name||'';
+      document.getElementById('edit-version').value = app.version||'';
+      document.getElementById('edit-genre').value = app.genre||'';
+      document.getElementById('edit-desc').value = app.description||'';
+
+      document.getElementById('modal').style.display = 'flex';
+      document.getElementById('modal-title').innerText = `Edit — ${app.name||''}`;
+    }
+
+    function closeModal(){
+      editingAppId = null;
+      document.getElementById('modal').style.display='none';
+    }
+
+    async function saveAppEdit(){
+      if(!editingAppId) return;
+
+      const payload = {
+        name: (document.getElementById('edit-name').value||'').trim(),
+        version: (document.getElementById('edit-version').value||'').trim(),
+        genre: (document.getElementById('edit-genre').value||'').trim(),
+        description: (document.getElementById('edit-desc').value||'').trim()
+      };
+
+      const r = await fetch(`http://localhost:8082/owner/apps/${editingAppId}`, {
+        method:'PUT',
+        headers:{ 
+          "Content-Type":"application/json",
+          "Authorization":"Bearer "+token
+        },
+        body: JSON.stringify(payload)
+      });
+
+      if(!r.ok){
+        alert('Update failed');
+        return;
+      }
+
+      closeModal();
+      await loadApps();
+    }
+
+    async function toggleVisibility(id){
+      await fetch(`http://localhost:8082/owner/apps/toggle/${id}`, { 
+        method:'PUT', 
+        headers:{ "Authorization":"Bearer "+token }
+      });
+
+      await loadApps();
+    }
+
+    function toggleReviews(appId, btn){
+      const box = document.getElementById('reviews-'+appId);
+      if(!box) return;
+
+      if(box.style.display === 'block'){ 
+        box.style.display='none'; 
+        btn.innerText='Show Reviews'; 
+        return; 
+      }
+
+      box.style.display='block';
+      box.innerHTML = '<div style="color:#667">Loading reviews...</div>';
+
+      fetch(`http://localhost:8082/owner/reviews/app/${appId}`, { 
+        headers:{ "Authorization":"Bearer "+token }
+      })
+      .then(r => r.ok ? r.json() : [])
+      .then(list => {
+        if(!list || list.length === 0) {
+          box.innerHTML = '<div class="small-muted">No reviews yet.</div>';
+          btn.innerText='Hide Reviews';
+          return;
+        }
+
+        box.innerHTML = '';
+
+        list.forEach(rv => {
+          const el = document.createElement('div');
+          el.style.padding='6px 0';
+
+          el.innerHTML = `
+            <strong>${rv.rating}/5</strong>
+            <span style="color:#6b7687;">by user ${rv.userId}</span>
+            <div>${escapeHtml(rv.comment||'')}</div>
+          `;
+
+          box.appendChild(el);
+        });
+
+        btn.innerText='Hide Reviews';
+      })
+      .catch(e => {
+        box.innerHTML = '<div class="small-muted">Unable to load reviews.</div>';
+        console.error(e);
+      });
+    }
+
+    function fetchRating(appId){
+      fetch(`http://localhost:8081/user/reviews/summary/${appId}`, { 
+        headers:{ "Authorization":"Bearer "+token }
+      })
+      .then(r => r.ok ? r.json() : Promise.resolve({ average:0, count:0 }))
+      .then(s => {
+        const el = document.getElementById('rating-'+appId);
+        if(el) el.innerText = `${Number(s.average||0).toFixed(1)} • ${Number(s.count||0)} reviews`;
+      })
+      .catch(()=>{
+        const el = document.getElementById('rating-'+appId);
+        if(el) el.innerText = '0.0 • 0 reviews';
+      });
+    }
+
+    function fetchDownloadCount(appId){
+      fetch(`http://localhost:8081/user/downloads/count/${appId}`, { 
+        headers:{ "Authorization":"Bearer "+token }
+      })
+      .then(r => r.ok ? r.text() : Promise.resolve('0'))
+      .then(c => {
+        const el = document.getElementById('downloads-'+appId);
+        if(el) el.innerText = `Downloads: ${c}`;
+      })
+      .catch(e => {
+        const el = document.getElementById('downloads-'+appId);
+        if(el) el.innerText = 'Downloads: —';
+      });
+    }
+
+    function initials(t){
+      if(!t) return 'A';
+      const parts = t.split(' ');
+      if(parts.length === 1) return t.slice(0,2).toUpperCase();
+      return (parts[0].charAt(0)+parts[1].charAt(0)).toUpperCase();
+    }
+
+    function escapeHtml(s){
+      if(!s) return '';
+      return String(s)
+        .replaceAll('&','&amp;')
+        .replaceAll('<','&lt;')
+        .replaceAll('>','&gt;')
+        .replaceAll('"','&quot;');
+    }
+  </script> 
+</body> 
+</html>
